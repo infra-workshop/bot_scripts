@@ -11,19 +11,8 @@ from datetime import datetime, timedelta, timezone
 from subprocess import call
 
 import post_twitter
-
-# try:
-#     import argparse
-#     flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
-# except ImportError:
-#     flags = None
  
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# CLIENT_SECRET_FILE = BASE_DIR + '/client_id.json'
-# APPLICATION_NAME = 'iw-post-workshop-announce'
-# CALENDAR_ID = "phq7gugri9ra9mcpq0rr37rrp56bllrv@import.calendar.google.com"
-# SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
-
 DEBUG = True
 def log(msg):
     if DEBUG:
@@ -32,11 +21,6 @@ def log(msg):
         f.close()
 
 JST = timezone(timedelta(hours=+9), 'JST')
-# def iso_to_jstdt(iso_str):
-#     dt = datetime.strptime(iso_str, '%Y-%m-%dT%H:%M:%SZ')
-#     dt = dt.replace(tzinfo=timezone.utc)
-#     dt = dt.astimezone(JST)
-#     return dt
 
 def post_reservation_by_at(message,time="now"):
     command = "/bin/echo python3 \"" + BASE_DIR + "/post_twitter.py \'" + message + "\'\" | /usr/bin/at " + time
@@ -46,66 +30,9 @@ def post_reservation_by_at(message,time="now"):
     ret = call(command, shell=True)
     log(ret)
     return ret
-
-# ### GOOGLE ###
-# def get_credentials():
-#     credential_dir = os.path.join(BASE_DIR, '.credentials')
-#     if not os.path.exists(credential_dir):
-#         os.makedirs(credential_dir)
-#     credential_path = os.path.join(credential_dir,
-#                                    'calendar-python-googleapi.json')
- 
-#     store = Storage(credential_path)
-#     credentials = store.get()
-#     if not credentials or credentials.invalid:
-#         flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
-#         flow.user_agent = APPLICATION_NAME
-#         if flags:
-#             credentials = tools.run_flow(flow, store, flags)
-#         else: # Needed only for compatibility with Python 2.6
-#             credentials = tools.run(flow, store)
-#         print('Storing credentials to ' + credential_path)
-#     return credentials
  
 def main():
     log("main start")
-    ### GOOGLE ###
-    # # Create credential
-    # log("Create credintial")
-    # credentials = get_credentials()
-    # http = credentials.authorize(httplib2.Http())
-    # service = discovery.build('calendar', 'v3', http=http)
- 
-    # # Create timeobject
-    # log("Create timeobject")    
-    # sdt = datetime.now(timezone.utc)
-    # sdt = sdt.replace(hour=0, minute=0, second=0, microsecond=0)
-    # sdt = sdt.isoformat()
-    # edt = (datetime.now(timezone.utc) + timedelta(days=1))
-    # edt = edt.replace(hour=23, minute=59, second=59)
-    # edt = edt.isoformat()
-
-    # # Get Events from Google
-    # log("Get Events from Google")    
-    # eventsResult = service.events().list(calendarId=CALENDAR_ID, timeMin=sdt, timeMax=edt,singleEvents=True, orderBy='startTime').execute()
-    # events = eventsResult.get('items', [])
- 
-    # # purse event
-    # log("Purse")
-    # if not events:
-    #     log('No events found.')
-    # for event in events:
-    #     start = event['start'].get('dateTime', event['start'].get('date'))
-    #     start = iso_to_jstdt(start)
-    #     day = start.strftime('%Y/%m/%d')
-    #     start = start.strftime('%H:%M')
-    #     end = event['end'].get('dateTime', event['end'].get('date'))
-    #     end = iso_to_jstdt(end)
-    #     end = end.strftime('%H:%M')
-    #     title = str(event['summary'])
-    #     url = "https://wp.infra-workshop.tech/?tribe_events=" + urllib.parse.quote(title.replace(" ","-"))
-        
-    ### WORDPRESS API ###
     sdt = datetime.now(JST)
     sdt = sdt.replace(hour=0, minute=0, second=0, microsecond=0)
     sdt = sdt.strftime('%Y/%m/%dT%H:%MZ')
