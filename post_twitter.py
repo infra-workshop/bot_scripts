@@ -43,11 +43,11 @@ if __name__ == '__main__':
     # Get Credential Key
     try:
         parser = configparser.ConfigParser()
-        parser.readfp(codecs.open(BASE_DIR + '/post_twitter.conf', "r", "utf8"))
-        CONSUMER_KEY = parser['key']['consumer_key']
-        CONSUMER_SECRET = parser['key']['consumer_secret']
-        TOKEN = parser['key']['token']
-        TOKEN_SECRET = parser['key']['token_secret']
+        parser.readfp(codecs.open(BASE_DIR + '/config.ini', "r", "utf8"))
+        CONSUMER_KEY = parser['twitter-key']['consumer_key']
+        CONSUMER_SECRET = parser['twitter-key']['consumer_secret']
+        TOKEN = parser['twitter-key']['token']
+        TOKEN_SECRET = parser['twitter-key']['token_secret']
     except:
         log("Failed while parsing config")
         log(traceback.format_exc())
