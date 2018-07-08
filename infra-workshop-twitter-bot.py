@@ -11,7 +11,7 @@ from datetime import datetime, timedelta, timezone
 from subprocess import call
 
 import post_twitter
- 
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DEBUG = True
 def log(msg):
@@ -21,7 +21,7 @@ def log(msg):
         f.close()
 
 JST = timezone(timedelta(hours=+9), 'JST')
-
+POST_SUMMERY_TIME = datetime.now(JST).replace(hour=7, minute=0, second=0, microsecond=0)
 def post_reservation_by_at(message,time="now"):
     command = "/bin/echo python3 \"" + BASE_DIR + "/post_twitter.py \'" + message + "\'\" | /usr/bin/at " + time
     command = command.replace('\n','\\\\n')
@@ -69,8 +69,10 @@ def main():
             if next_post < end_datetime:
                 next_post = end_datetime
             log("Today Workshop")
-            word = "今日" + day_s + "の #インフラ勉強会 は...\n" + title + "\n" + start + " - " + end + "\n" + url
-            post_reservation_by_at(word, "now + 1min")
+            start_datetime = datetime(tzinfo=JST, year=int(esd["year"]),month=int(esd["month"]),day=int(esd["day"]) ,hour=int(esd["hour"]), minute=int(esd["minutes"]),)
+            if start_datetime > POST_SUMMERY_TIME:
+                word = "今日" + day_s + "の #インフラ勉強会 は...\n" + title + "\n" + start + " - " + end + "\n" + url
+                post_reservation_by_at(word, POST_SUMMERY_TIME.strftime("%H%M"))
 
             word = "今日" + day_s + "の勉強会がそろそろ始まるよ！\n" + title + "\n" + start + " - " + end + "\n" + url + "\n#インフラ勉強会"
             post_reservation_by_at(word, start + " - 30min")
